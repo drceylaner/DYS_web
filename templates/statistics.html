@@ -1,0 +1,279 @@
+{% extends "dashboard_base.html" %}
+
+{% block content %}
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2"><i class="bi bi-bar-chart"></i> İstatistikler</h1>
+</div>
+
+<div class="row mb-4">
+    {% if 'Admin' in session.user_roles %}
+        <div class="col-md-3 mb-3">
+            <div class="card text-white bg-primary">
+                <div class="card-body">
+                    <h5 class="card-title"><i class="bi bi-people"></i> Toplam Kullanıcı</h5>
+                    <h2 class="card-text">{{ stats.total_users }}</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card text-white bg-secondary">
+                <div class="card-body">
+                    <h5 class="card-title"><i class="bi bi-file-earmark-text"></i> Toplam Makale</h5>
+                    <h2 class="card-text">{{ stats.total_articles }}</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card text-white bg-success">
+                <div class="card-body">
+                    <h5 class="card-title"><i class="bi bi-check-circle"></i> Yayınlanmış</h5>
+                    <h2 class="card-text">{{ stats.published }}</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card text-white bg-warning">
+                <div class="card-body">
+                    <h5 class="card-title"><i class="bi bi-clock-history"></i> Bekleyen</h5>
+                    <h2 class="card-text">{{ stats.pending }}</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card text-white bg-info">
+                <div class="card-body">
+                    <h5 class="card-title"><i class="bi bi-search"></i> Hakemde</h5>
+                    <h2 class="card-text">{{ stats.in_review }}</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card text-white bg-danger">
+                <div class="card-body">
+                    <h5 class="card-title"><i class="bi bi-x-circle"></i> Reddedilen</h5>
+                    <h2 class="card-text">{{ stats.rejected }}</h2>
+                </div>
+            </div>
+        </div>
+        
+        {% if stats.role_distribution %}
+        <div class="col-md-12 mt-3">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="bi bi-people"></i> Rol Dağılımı</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        {% for role, count in stats.role_distribution.items() %}
+                        <div class="col-md-3 mb-2">
+                            <strong>{{ role }}:</strong> {{ count }} kullanıcı
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    
+    {% elif 'Editör' in session.user_roles %}
+        <div class="col-md-3 mb-3">
+            <div class="card text-white bg-primary">
+                <div class="card-body">
+                    <h5 class="card-title">Toplam Makale</h5>
+                    <h2 class="card-text">{{ stats.total_articles }}</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card text-white bg-warning">
+                <div class="card-body">
+                    <h5 class="card-title">Bekleyen</h5>
+                    <h2 class="card-text">{{ stats.pending }}</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card text-white bg-info">
+                <div class="card-body">
+                    <h5 class="card-title">Değerlendirmede</h5>
+                    <h2 class="card-text">{{ stats.in_review }}</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card text-white bg-success">
+                <div class="card-body">
+                    <h5 class="card-title">Kabul Edilen</h5>
+                    <h2 class="card-text">{{ stats.accepted }}</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card text-white bg-dark">
+                <div class="card-body">
+                    <h5 class="card-title">Yayınlanan</h5>
+                    <h2 class="card-text">{{ stats.published }}</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card text-white bg-danger">
+                <div class="card-body">
+                    <h5 class="card-title">Reddedilen</h5>
+                    <h2 class="card-text">{{ stats.rejected }}</h2>
+                </div>
+            </div>
+        </div>
+    
+    {% elif 'Yazar' in session.user_roles %}
+        <div class="col-md-3 mb-3">
+            <div class="card text-white bg-primary">
+                <div class="card-body">
+                    <h5 class="card-title">Toplam Makale</h5>
+                    <h2 class="card-text">{{ stats.total_articles }}</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card text-white bg-secondary">
+                <div class="card-body">
+                    <h5 class="card-title">Gönderilen</h5>
+                    <h2 class="card-text">{{ stats.submitted }}</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card text-white bg-warning">
+                <div class="card-body">
+                    <h5 class="card-title">Değerlendirmede</h5>
+                    <h2 class="card-text">{{ stats.in_review }}</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card text-white bg-success">
+                <div class="card-body">
+                    <h5 class="card-title">Kabul Edilen</h5>
+                    <h2 class="card-text">{{ stats.accepted }}</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card text-white bg-dark">
+                <div class="card-body">
+                    <h5 class="card-title">Yayınlanan</h5>
+                    <h2 class="card-text">{{ stats.published }}</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card text-white bg-danger">
+                <div class="card-body">
+                    <h5 class="card-title">Reddedilen</h5>
+                    <h2 class="card-text">{{ stats.rejected }}</h2>
+                </div>
+            </div>
+        </div>
+    
+    {% elif 'Hakem' in session.user_roles %}
+        <div class="col-md-3 mb-3">
+            <div class="card text-white bg-primary">
+                <div class="card-body">
+                    <h5 class="card-title">Atanan Makale</h5>
+                    <h2 class="card-text">{{ stats.assigned }}</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card text-white bg-success">
+                <div class="card-body">
+                    <h5 class="card-title">Değerlendirilen</h5>
+                    <h2 class="card-text">{{ stats.evaluated }}</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card text-white bg-warning">
+                <div class="card-body">
+                    <h5 class="card-title">Bekleyen</h5>
+                    <h2 class="card-text">{{ stats.pending }}</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card text-white bg-success">
+                <div class="card-body">
+                    <h5 class="card-title">Kabul Verdiğim</h5>
+                    <h2 class="card-text">{{ stats.accepted_decisions }}</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card text-white bg-warning">
+                <div class="card-body">
+                    <h5 class="card-title">Düzeltme İstediğim</h5>
+                    <h2 class="card-text">{{ stats.correction_decisions }}</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card text-white bg-danger">
+                <div class="card-body">
+                    <h5 class="card-title">Reddettiğim</h5>
+                    <h2 class="card-text">{{ stats.rejected_decisions }}</h2>
+                </div>
+            </div>
+        </div>
+    
+    {% elif 'Alan Editörü' in session.user_roles %}
+        <div class="col-md-3 mb-3">
+            <div class="card text-white bg-primary">
+                <div class="card-body">
+                    <h5 class="card-title">Alanımdaki Makale</h5>
+                    <h2 class="card-text">{{ stats.total_articles }}</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card text-white bg-warning">
+                <div class="card-body">
+                    <h5 class="card-title">Ön İncelemede</h5>
+                    <h2 class="card-text">{{ stats.pending }}</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card text-white bg-info">
+                <div class="card-body">
+                    <h5 class="card-title">Hakemde</h5>
+                    <h2 class="card-text">{{ stats.in_review }}</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card text-white bg-secondary">
+                <div class="card-body">
+                    <h5 class="card-title">Hakem Kararı</h5>
+                    <h2 class="card-text">{{ stats.reviewer_decision }}</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card text-white bg-success">
+                <div class="card-body">
+                    <h5 class="card-title">Editöre Önerilen</h5>
+                    <h2 class="card-text">{{ stats.recommended }}</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card text-white bg-dark">
+                <div class="card-body">
+                    <h5 class="card-title">Tamamlanan</h5>
+                    <h2 class="card-text">{{ stats.completed }}</h2>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

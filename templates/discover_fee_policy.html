@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row">
+        <div class="col-md-10 mx-auto">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h1 class="mb-0"><i class="bi bi-cash-coin"></i> Ücret Politikası</h1>
+                </div>
+                <div class="card-body p-5">
+                    <div class="mb-4">
+                        <h3 class="text-primary mb-3">Genel Politika</h3>
+                        <div class="alert alert-success">
+                            <h5><i class="bi bi-check-circle"></i> Tamamen Ücretsiz</h5>
+                            <p class="mb-0">
+                                İSTE Mühendislik Dergisi, açık erişim prensibini benimser ve tüm makaleler
+                                ücretsiz olarak erişilebilir durumdadır. Dergimiz, yazarlardan makale gönderme
+                                veya yayınlama ücreti talep etmemektedir.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <h3 class="text-primary mb-3">Ücretsiz Hizmetler</h3>
+                        <p class="mb-3">Aşağıdaki hizmetler tamamen ücretsizdir:</p>
+                        <ul class="list-group">
+                            <li class="list-group-item list-group-item-success">
+                                <i class="bi bi-check-circle-fill"></i> Makale gönderme
+                            </li>
+                            <li class="list-group-item list-group-item-success">
+                                <i class="bi bi-check-circle-fill"></i> Makale değerlendirme
+                            </li>
+                            <li class="list-group-item list-group-item-success">
+                                <i class="bi bi-check-circle-fill"></i> Makale yayınlama
+                            </li>
+                            <li class="list-group-item list-group-item-success">
+                                <i class="bi bi-check-circle-fill"></i> Açık erişim
+                            </li>
+                            <li class="list-group-item list-group-item-success">
+                                <i class="bi bi-check-circle-fill"></i> DOI atama
+                            </li>
+                            <li class="list-group-item list-group-item-success">
+                                <i class="bi bi-check-circle-fill"></i> PDF indirme
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="mb-4">
+                        <h3 class="text-primary mb-3">Ek Hizmetler</h3>
+                        <p class="mb-3">Dergimiz, temel hizmetlerin yanı sıra aşağıdaki ek hizmetleri de sunmaktadır:</p>
+                        <ul class="list-group">
+                            <li class="list-group-item">
+                                <strong>Hızlı değerlendirme (opsiyonel):</strong> Ek ücret gerektirmez
+                            </li>
+                            <li class="list-group-item">
+                                <strong>Renkli şekiller:</strong> Basılı versiyonda renkli şekiller ücretsizdir
+                            </li>
+                            <li class="list-group-item">
+                                <strong>Ek sayfa:</strong> İlk 10 sayfa ücretsiz, sonrası için ücret talep edilmez
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="mb-4">
+                        <h3 class="text-primary mb-3">Finansman</h3>
+                        <div class="alert alert-info">
+                            <p class="mb-0">
+                                Dergimiz, İskenderun Teknik Üniversitesi tarafından desteklenmektedir.
+                                Bu sayede yazarlardan herhangi bir ücret talep edilmemektedir.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="mt-4">
+                        <a href="{{ url_for('home') }}" class="btn btn-primary">
+                            <i class="bi bi-arrow-left"></i> Ana Sayfaya Dön
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

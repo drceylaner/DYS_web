@@ -1,0 +1,92 @@
+{% extends "dashboard_base.html" %}
+
+{% block content %}
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3">
+    <div>
+        <h1 class="h2 mb-1"><i class="bi bi-speedometer2"></i> Dashboard</h1>
+        <p class="text-muted mb-0">Hoş geldiniz, <strong>{{ user.name }}</strong></p>
+    </div>
+    <div>
+        <span class="badge bg-primary fs-6 px-3 py-2">{{ session.user_role }}</span>
+    </div>
+</div>
+
+<div class="row mb-4 g-3">
+    <div class="col-md-3 col-sm-6">
+        <div class="card stats-card text-white" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="card-subtitle mb-2 opacity-75">Toplam</h6>
+                        <h2 class="card-title mb-0 fw-bold">{{ stats.total }}</h2>
+                    </div>
+                    <i class="bi bi-file-earmark-text fs-1 opacity-50"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 col-sm-6">
+        <div class="card stats-card text-white" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="card-subtitle mb-2 opacity-75">Bekleyen</h6>
+                        <h2 class="card-title mb-0 fw-bold">{{ stats.pending }}</h2>
+                    </div>
+                    <i class="bi bi-clock-history fs-1 opacity-50"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 col-sm-6">
+        <div class="card stats-card text-white" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="card-subtitle mb-2 opacity-75">Değerlendirmede</h6>
+                        <h2 class="card-title mb-0 fw-bold">{{ stats.review }}</h2>
+                    </div>
+                    <i class="bi bi-search fs-1 opacity-50"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 col-sm-6">
+        <div class="card stats-card text-white" style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="card-subtitle mb-2 opacity-75">Kabul</h6>
+                        <h2 class="card-title mb-0 fw-bold">{{ stats.accepted }}</h2>
+                    </div>
+                    <i class="bi bi-check-circle fs-1 opacity-50"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="bi bi-info-circle"></i> Hoş Geldiniz</h5>
+            </div>
+            <div class="card-body">
+                <p class="lead">Merhaba <strong>{{ user.name }}</strong>,</p>
+                <p>Dashboard'unuzdan makalelerinizi yönetebilir, yeni makale gönderebilir ve sistemdeki işlemlerinizi takip edebilirsiniz.</p>
+                
+                {% if 'Yazar' in session.user_roles %}
+                <a href="{{ url_for('new_submission') }}" class="btn btn-primary btn-lg">
+                    <i class="bi bi-plus-circle"></i> Yeni Makale Gönder
+                </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block right_sidebar %}
+{{ super() }}
+{% endblock %}

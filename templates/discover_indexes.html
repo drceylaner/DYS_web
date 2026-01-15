@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row">
+        <div class="col-md-10 mx-auto">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h1 class="mb-0"><i class="bi bi-bookmark"></i> Dizinler</h1>
+                </div>
+                <div class="card-body p-5">
+                    <div class="mb-4">
+                        <h3 class="text-primary mb-3">Ulusal Dizinler</h3>
+                        <p class="mb-3">Dergimiz aşağıdaki ulusal dizinlerde taranmaktadır:</p>
+                        <ul class="list-group">
+                            <li class="list-group-item">
+                                <i class="bi bi-check-circle-fill text-success"></i> TR Dizin (TÜBİTAK)
+                            </li>
+                            <li class="list-group-item">
+                                <i class="bi bi-check-circle-fill text-success"></i> ULAKBİM Sosyal ve Beşeri Bilimler Veri Tabanı
+                            </li>
+                            <li class="list-group-item">
+                                <i class="bi bi-check-circle-fill text-success"></i> Türk Eğitim İndeksi
+                            </li>
+                            <li class="list-group-item">
+                                <i class="bi bi-check-circle-fill text-success"></i> ASOS İndeks
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="mb-4">
+                        <h3 class="text-primary mb-3">Uluslararası Dizinler</h3>
+                        <p class="mb-3">Dergimiz aşağıdaki uluslararası dizinlerde taranmaktadır:</p>
+                        <ul class="list-group">
+                            <li class="list-group-item">
+                                <i class="bi bi-check-circle-fill text-success"></i> Google Scholar
+                            </li>
+                            <li class="list-group-item">
+                                <i class="bi bi-check-circle-fill text-success"></i> EBSCO
+                            </li>
+                            <li class="list-group-item">
+                                <i class="bi bi-check-circle-fill text-success"></i> Index Copernicus
+                            </li>
+                            <li class="list-group-item">
+                                <i class="bi bi-hourglass-split text-warning"></i> DOAJ (Directory of Open Access Journals) - Başvuru aşamasında
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="mb-4">
+                        <h3 class="text-primary mb-3">DOI ve ISSN</h3>
+                        <div class="card">
+                            <div class="card-body">
+                                <ul class="list-unstyled mb-0">
+                                    <li class="mb-2">
+                                        <strong>DOI Öneki:</strong> 10.5555/iste-eng
+                                    </li>
+                                    <li class="mb-2">
+                                        <strong>e-ISSN:</strong> 2757-9876
+                                    </li>
+                                    <li class="mb-2">
+                                        <strong>Basılı ISSN:</strong> 2757-9868
+                                    </li>
+                                    <li class="mb-2">
+                                        <strong>Yayıncı:</strong> İskenderun Teknik Üniversitesi
+                                    </li>
+                                    <li>
+                                        <strong>Kuruluş Yılı:</strong> 2025
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <h3 class="text-primary mb-3">Erişim</h3>
+                        <div class="alert alert-success">
+                            <p class="mb-0">
+                                Tüm makaleler dergi web sitesinden ücretsiz olarak erişilebilir.
+                                Makaleler PDF formatında indirilebilir ve açık erişim lisansı altında
+                                yayınlanmaktadır.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="mt-4">
+                        <a href="{{ url_for('home') }}" class="btn btn-primary">
+                            <i class="bi bi-arrow-left"></i> Ana Sayfaya Dön
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

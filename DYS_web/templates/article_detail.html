@@ -1,0 +1,291 @@
+{% extends "dashboard_base.html" %}
+
+{% block content %}
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2"><i class="bi bi-file-earmark-text"></i> Makale Detayı</h1>
+    <div>
+        {% if article.file_path %}
+        <a href="{{ url_for('download_article', article_id=article.id) }}" class="btn btn-outline-primary">
+            <i class="bi bi-download"></i> Dosyayı İndir
+        </a>
+        {% endif %}
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card mb-3">
+            <div class="card-header">
+                <h5 class="mb-0">Makale Bilgileri</h5>
+            </div>
+            <div class="card-body">
+                <table class="table table-borderless">
+                    <tr>
+                        <th width="30%">Makale ID:</th>
+                        <td>{{ article.id }}</td>
+                    </tr>
+                    <tr>
+                        <th>Başlık:</th>
+                        <td>{{ article.title }}</td>
+                    </tr>
+                    <tr>
+                        <th>Yazar:</th>
+                        <td>{{ article.authors or article.author }}</td>
+                    </tr>
+                    <tr>
+                        <th>Durum:</th>
+                        <td>
+                            {% if article.status == 'Gönderildi' %}
+                                <span class="badge bg-warning">{{ article.status }}</span>
+                            {% elif article.status == 'Değerlendirmede' %}
+                                <span class="badge bg-info">{{ article.status }}</span>
+                            {% elif article.status == 'Kabul Edildi' %}
+                                <span class="badge bg-success">{{ article.status }}</span>
+                            {% elif article.status == 'Reddedildi' %}
+                                <span class="badge bg-danger">{{ article.status }}</span>
+                            {% else %}
+                                <span class="badge bg-secondary">{{ article.status }}</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Editör:</th>
+                        <td>{{ article.editor or '-' }}</td>
+                    </tr>
+                    <tr>
+                        <th>Alan Editörü:</th>
+                        <td>{{ article.field_editor or '-' }}</td>
+                    </tr>
+                    {% if article.volume %}
+                    <tr>
+                        <th>Cilt/Sayı/Yıl:</th>
+                        <td>{{ article.volume }} / {{ article.issue }} / {{ article.year }}</td>
+                    </tr>
+                    {% endif %}
+                    {% if article.pages %}
+                    <tr>
+                        <th>Sayfa:</th>
+                        <td>{{ article.pages }}</td>
+                    </tr>
+                    {% endif %}
+                </table>
+            </div>
+        </div>
+
+        <!-- Editör İşlemleri -->
+        {% if 'Admin' in session.user_roles or 'Editör' in session.user_roles %}
+        <div class="card mb-3">
+            <div class="card-header">
+                <h5 class="mb-0">Editör İşlemleri</h5>
+            </div>
+            <div class="card-body">
+                {% if not article.field_editor %}
+                <form method="POST" action="{{ url_for('article_detail', article_id=article.id) }}" class="mb-3">
+                    <input type="hidden" name="action" value="assign_field_editor">
+                    <div class="mb-2">
+                        <label class="form-label">Alan Editörü Ata:</label>
+                        <select name="field_editor" class="form-select" required>
+                            <option value="">Seçiniz</option>
+                            {% for fe in field_editors %}
+                            <option value="{{ fe['username'] }}">{{ fe['name'] }} ({{ fe['username'] }}){% if fe.get('expertise_field') %} - {{ fe['expertise_field'] }}{% endif %}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-sm">Alan Editörü Ata</button>
+                </form>
+                {% endif %}
+                
+                <form method="POST" action="{{ url_for('article_detail', article_id=article.id) }}" class="mb-3">
+                    <input type="hidden" name="action" value="update_status">
+                    <div class="mb-2">
+                        <label class="form-label">Durum Güncelle:</label>
+                        <select name="new_status" class="form-select" required>
+                            <option value="Gönderildi">Gönderildi</option>
+                            <option value="Editör İncelemede">Editör İncelemede</option>
+                            <option value="Alan Editörü İncelemede">Alan Editörü İncelemede</option>
+                            <option value="Hakemde">Hakemde</option>
+                            <option value="Kabul Edildi">Kabul Edildi</option>
+                            <option value="Yayına Hazır">Yayına Hazır</option>
+                            <option value="Yayınlandı">Yayınlandı</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-secondary btn-sm">Durum Güncelle</button>
+                </form>
+                
+                {% if article.status not in ['Reddedildi', 'Yayınlandı'] %}
+                <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#rejectModal">
+                    Makaleyi Reddet
+                </button>
+                {% endif %}
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Alan Editörü İşlemleri -->
+        {% if 'Alan Editörü' in session.user_roles and article.field_editor == session.username %}
+        <div class="card mb-3">
+            <div class="card-header">
+                <h5 class="mb-0">Alan Editörü İşlemleri</h5>
+            </div>
+            <div class="card-body">
+                {% if not article.reviewers or article.reviewers|length < 2 %}
+                <form method="POST" action="{{ url_for('article_detail', article_id=article.id) }}" class="mb-3">
+                    <input type="hidden" name="action" value="assign_reviewers">
+                    <div class="mb-2">
+                        <label class="form-label">Hakem Seç (2 hakem seçiniz):</label>
+                        <div class="row">
+                            {% for reviewer in reviewers_list %}
+                            <div class="col-md-6 mb-2">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="reviewers" value="{{ reviewer['username'] }}" id="rev_{{ reviewer['username'] }}">
+                                    <label class="form-check-label" for="rev_{{ reviewer['username'] }}">
+                                        {{ reviewer['name'] }} ({{ reviewer['username'] }}){% if reviewer.get('expertise_field') %} - {{ reviewer['expertise_field'] }}{% endif %}
+                                    </label>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-sm">Hakemleri Ata</button>
+                </form>
+                {% endif %}
+                
+                {% if article.reviewers and article.reviewers|length == 2 %}
+                <form method="POST" action="{{ url_for('article_detail', article_id=article.id) }}" class="mb-3">
+                    <input type="hidden" name="action" value="assign_third_reviewer">
+                    <div class="mb-2">
+                        <label class="form-label">3. Hakem Ata (Opsiyonel):</label>
+                        <select name="third_reviewer" class="form-select">
+                            <option value="">Seçiniz</option>
+                            {% for reviewer in reviewers_list %}
+                            {% if reviewer['username'] not in article.reviewers %}
+                            <option value="{{ reviewer['username'] }}">{{ reviewer['name'] }} ({{ reviewer['username'] }})</option>
+                            {% endif %}
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-secondary btn-sm">3. Hakemi Ata</button>
+                </form>
+                {% endif %}
+                
+                <form method="POST" action="{{ url_for('article_detail', article_id=article.id) }}">
+                    <input type="hidden" name="action" value="field_editor_recommendation">
+                    <div class="mb-2">
+                        <label class="form-label">Editöre Öneri:</label>
+                        <textarea name="recommendation" class="form-control" rows="3" placeholder="Hakem kararlarına göre editöre önerinizi yazın..."></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-success btn-sm">Öneriyi Kaydet</button>
+                </form>
+            </div>
+        </div>
+        {% endif %}
+
+        {% if reviews %}
+        <div class="card mb-3">
+            <div class="card-header">
+                <h5 class="mb-0">Hakem Değerlendirmeleri</h5>
+            </div>
+            <div class="card-body">
+                {% for review in reviews %}
+                <div class="border-bottom pb-3 mb-3">
+                    <div class="d-flex justify-content-between">
+                        <strong>{{ review.reviewer_username }}</strong>
+                        <span class="badge bg-{{ 'success' if review.decision == 'Kabul' else 'danger' if review.decision == 'Red' else 'warning' }}">
+                            {{ review.decision }}
+                        </span>
+                    </div>
+                    {% if review.comment %}
+                    <p class="mt-2">{{ review.comment }}</p>
+                    {% endif %}
+                    {% if review.file_path %}
+                    <a href="{{ url_for('download_review', review_id=review.id) }}" class="btn btn-sm btn-outline-secondary">
+                        <i class="bi bi-download"></i> Değerlendirme Dosyası
+                    </a>
+                    {% endif %}
+                    <small class="text-muted d-block mt-2">{{ review.created_at }}</small>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+
+        {% if messages %}
+        <div class="card mb-3">
+            <div class="card-header">
+                <h5 class="mb-0">Mesajlar</h5>
+            </div>
+            <div class="card-body">
+                {% for msg in messages %}
+                <div class="border-bottom pb-2 mb-2">
+                    <strong>{{ msg.from_user }}</strong> → {{ msg.to_user }}
+                    <h6 class="mt-1">{{ msg.subject }}</h6>
+                    <p class="mb-1">{{ msg.message }}</p>
+                    <small class="text-muted">{{ msg.created_at }}</small>
+                </div>
+                {% endfor %}
+                <a href="{{ url_for('send_message', article_id=article.id, to_user=article.author) }}" class="btn btn-primary btn-sm mt-2">
+                    <i class="bi bi-envelope"></i> Mesaj Gönder
+                </a>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+
+    <div class="col-md-4">
+        <div class="card mb-3">
+            <div class="card-header">
+                <h5 class="mb-0">Hakemler</h5>
+            </div>
+            <div class="card-body">
+                {% if article.reviewers %}
+                <ul class="list-group list-group-flush">
+                    {% for reviewer in article.reviewers %}
+                    <li class="list-group-item">{{ reviewer }}</li>
+                    {% endfor %}
+                </ul>
+                {% else %}
+                <p class="text-muted">Henüz hakem atanmamış.</p>
+                {% endif %}
+            </div>
+        </div>
+        
+        {% if article.field_editor_recommendation %}
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Alan Editörü Önerisi</h5>
+            </div>
+            <div class="card-body">
+                <p>{{ article.field_editor_recommendation }}</p>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Reddetme Modal -->
+{% if 'Admin' in session.user_roles or 'Editör' in session.user_roles %}
+<div class="modal fade" id="rejectModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Makaleyi Reddet</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form method="POST" action="{{ url_for('article_detail', article_id=article.id) }}">
+                <input type="hidden" name="action" value="reject_article">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">Reddetme Nedeni:</label>
+                        <textarea name="rejection_reason" class="form-control" rows="5" required></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button>
+                    <button type="submit" class="btn btn-danger">Reddet</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endblock %}

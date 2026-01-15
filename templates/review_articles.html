@@ -1,0 +1,56 @@
+{% extends "dashboard_base.html" %}
+
+{% block content %}
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2"><i class="bi bi-search"></i> Değerlendirmede Olan Makaleler</h1>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        {% if articles %}
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Makale ID</th>
+                        <th>Başlık</th>
+                        <th>Yazar</th>
+                        <th>Durum</th>
+                        <th>Editör</th>
+                        <th>Alan Editörü</th>
+                        <th>Tarih</th>
+                        <th>İşlemler</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for article in articles %}
+                    <tr>
+                        <td>{{ article['id'] }}</td>
+                        <td>{{ article['title'] }}</td>
+                        <td>{{ article.get('authors') or article['author'] }}</td>
+                        <td>
+                            <span class="badge bg-info">{{ article['status'] }}</span>
+                        </td>
+                        <td>{{ article.get('editor') or '-' }}</td>
+                        <td>{{ article.get('field_editor') or '-' }}</td>
+                        <td>{{ article.get('created_at', '')[:10] if article.get('created_at') else '-' }}</td>
+                        <td>
+                            <a href="{{ url_for('article_detail', article_id=article['id']) }}" 
+                               class="btn btn-sm btn-outline-primary">
+                                <i class="bi bi-eye"></i> Detay
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="text-center py-5">
+            <i class="bi bi-search fs-1 text-muted"></i>
+            <p class="text-muted mt-3">Değerlendirmede olan makale bulunmamaktadır.</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

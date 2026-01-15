@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Dashboard - İSTE Mühendislik Dergisi{% endblock %}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    {% block extra_css %}{% endblock %}
+</head>
+<body class="dashboard-body">
+    <!-- Flash Messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div class="flash-messages">
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ 'danger' if category == 'error' else category }} alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+
+    <!-- Top Navigation -->
+    <nav class="navbar navbar-dark bg-primary shadow-lg">
+        <div class="container-fluid">
+            <button class="btn btn-outline-light d-md-none me-2" type="button" onclick="toggleSidebar()">
+                <i class="bi bi-list"></i>
+            </button>
+            <a class="navbar-brand fw-bold" href="{{ url_for('dashboard') }}">
+                <i class="bi bi-journal-text"></i> İSTE Mühendislik Dergisi
+            </a>
+            <div class="d-flex align-items-center">
+                <span class="text-light me-3 d-none d-md-block">
+                    <i class="bi bi-person-circle"></i> {{ session.user_name }}
+                </span>
+                {% if session.user_roles|length > 1 %}
+                <form method="POST" action="{{ url_for('switch_role') }}" class="me-3" style="display: inline;">
+                    <select name="role" class="form-select form-select-sm" onchange="this.form.submit()" style="width: auto; display: inline-block; background: rgba(255,255,255,0.2); color: white; border-color: rgba(255,255,255,0.3);">
+                        {% for role in session.user_roles %}
+                        <option value="{{ role }}" {% if role == session.user_role %}selected{% endif %} style="color: #333;">{{ role }}</option>
+                        {% endfor %}
+                    </select>
+                </form>
+                {% else %}
+                <span class="badge bg-light text-dark me-3 d-none d-md-inline">{{ session.user_role }}</span>
+                {% endif %}
+                <a href="{{ url_for('home') }}" class="btn btn-outline-light btn-sm me-2 d-none d-md-inline">
+                    <i class="bi bi-house"></i> Ana Sayfa
+                </a>
+                <a href="{{ url_for('logout') }}" class="btn btn-outline-light btn-sm">
+                    <i class="bi bi-box-arrow-right"></i> <span class="d-none d-md-inline">Çıkış</span>
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            <nav class="col-md-3 col-lg-2 bg-light sidebar" id="leftSidebar">
+                <div class="position-sticky pt-3">
+                    <ul class="nav flex-column">
+                        {% if session.user_role == 'Admin' %}
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ url_for('dashboard') }}">
+                                    <i class="bi bi-house"></i> Ana Sayfa
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ url_for('user_management') }}">
+                                    <i class="bi bi-people"></i> Kullanıcı Yönetimi
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ url_for('submissions') }}">
+                                    <i class="bi bi-file-earmark-text"></i> Gönderilenler
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ url_for('messages') }}">
+                                    <i class="bi bi-envelope"></i> Gelen Mesajlar
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ url_for('sent_messages') }}">
+                                    <i class="bi bi-envelope-paper"></i> Gönderilen Mesajlar
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ url_for('contact_messages') }}">
+                                    <i class="bi bi-chat-dots"></i> İletişim Mesajları
+                                </a>
+                            </li>
+                        {% elif session.user_role == 'Editör' %}
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ url_for('dashboard') }}">
+                                    <i class="bi bi-house"></i> Ana Sayfa
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ url_for('submissions') }}">
+                                    <i class="bi bi-file-earmark-text"></i> Gönderilenler
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ url_for('pending_articles') }}">
+                                    <i class="bi bi-clock-history"></i> Onay Bekleyenler
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ url_for('review_articles') }}">
+                                    <i class="bi bi-search"></i> Değerlendirmede
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ url_for('accepted_articles') }}">
+                                    <i class="bi bi-check-circle"></i> Kabul Edilenler
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ url_for('rejected_articles') }}">
+                                    <i class="bi bi-x-circle"></i> Reddedilenler
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ url_for('publish_issue') }}">
+                                    <i class="bi bi-journal-plus"></i> Sayı Oluştur
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ url_for('reviewers') }}">
+                                    <i class="bi bi-people"></i> Hakemler
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ url_for('statistics') }}">
+                                    <i class="bi bi-bar-chart"></i> İstatistikler
+                                </a>
+                            </li>
+                        {% elif session.user_role == 'Yazar' %}
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ url_for('dashboard') }}">
+                                    <i class="bi bi-house"></i> Ana Sayfa
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ url_for('new_submission') }}">
+                                    <i class="bi bi-plus-circle"></i> Yeni Makale Gönder
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ url_for('my_articles') }}">
+                                    <i class="bi bi-file-earmark-text"></i> Makalelerim
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ url_for('my_articles') }}">
+                                    <i class="bi bi-graph-up"></i> Durum Takibi
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ url_for('my_publications') }}">
+                                    <i class="bi bi-book"></i> Yayınlarım
+                                </a>
+                            </li>
+                        {% elif session.user_role == 'Hakem' %}
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ url_for('dashboard') }}">
+                                    <i class="bi bi-house"></i> Ana Sayfa
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ url_for('assigned_reviews') }}">
+                                    <i class="bi bi-clipboard-check"></i> Atanan Makaleler
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ url_for('evaluated_reviews') }}">
+                                    <i class="bi bi-check2-all"></i> Değerlendirdiklerim
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ url_for('sent_decisions') }}">
+                                    <i class="bi bi-send"></i> Gönderilen Kararlar
+                                </a>
+                            </li>
+                        {% elif session.user_role == 'Alan Editörü' %}
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ url_for('dashboard') }}">
+                                    <i class="bi bi-house"></i> Ana Sayfa
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ url_for('assigned_articles_fe') }}">
+                                    <i class="bi bi-file-earmark-text"></i> Atanan Makaleler
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ url_for('reviewer_decisions_fe') }}">
+                                    <i class="bi bi-clipboard-data"></i> Hakem Kararları
+                                </a>
+                            </li>
+                        {% endif %}
+                        {% if session.user_role == 'Admin' or session.user_role == 'Editör' %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('statistics') }}">
+                                <i class="bi bi-bar-chart"></i> İstatistikler
+                            </a>
+                        </li>
+                        {% endif %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('settings') }}">
+                                <i class="bi bi-gear"></i> Ayarlar
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+
+            <!-- Main Content -->
+            <main class="col-md-6 ms-sm-auto col-lg-7 px-md-4">
+                <div class="pt-3">
+                    {% block content %}{% endblock %}
+                </div>
+            </main>
+
+            <!-- Right Sidebar -->
+            <aside class="col-md-3 col-lg-3 bg-light right-sidebar">
+                <div class="position-sticky pt-3">
+                    {% block right_sidebar %}
+                    <!-- Hızlı İstatistikler -->
+                    <div class="card mb-3 shadow-sm">
+                        <div class="card-header bg-primary text-white">
+                            <h6 class="mb-0"><i class="bi bi-speedometer2"></i> Hızlı Bakış</h6>
+                        </div>
+                        <div class="card-body">
+                            {% if session.user_role == 'Admin' %}
+                                <div class="d-flex justify-content-between align-items-center mb-3 pb-2 border-bottom">
+                                    <small class="text-muted">Toplam Kullanıcı</small>
+                                    <strong class="text-primary fs-5">{% if quick_stats is defined and quick_stats.get('total_users') %}{{ quick_stats.total_users }}{% else %}0{% endif %}</strong>
+                                </div>
+                                <div class="d-flex justify-content-between align-items-center mb-3 pb-2 border-bottom">
+                                    <small class="text-muted">Toplam Makale</small>
+                                    <strong class="text-primary fs-5">{% if stats is defined and stats.total %}{{ stats.total }}{% else %}0{% endif %}</strong>
+                                </div>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <small class="text-muted">Bekleyen</small>
+                                    <strong class="text-warning fs-5">{% if stats is defined and stats.pending %}{{ stats.pending }}{% else %}0{% endif %}</strong>
+                                </div>
+                            {% elif session.user_role == 'Editör' %}
+                                <div class="d-flex justify-content-between align-items-center mb-3 pb-2 border-bottom">
+                                    <small class="text-muted">Bekleyen</small>
+                                    <strong class="text-warning fs-5">{% if stats is defined and stats.pending %}{{ stats.pending }}{% else %}0{% endif %}</strong>
+                                </div>
+                                <div class="d-flex justify-content-between align-items-center mb-3 pb-2 border-bottom">
+                                    <small class="text-muted">Değerlendirmede</small>
+                                    <strong class="text-info fs-5">{% if stats is defined and stats.review %}{{ stats.review }}{% else %}0{% endif %}</strong>
+                                </div>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <small class="text-muted">Kabul</small>
+                                    <strong class="text-success fs-5">{% if stats is defined and stats.accepted %}{{ stats.accepted }}{% else %}0{% endif %}</strong>
+                                </div>
+                            {% elif session.user_role == 'Yazar' %}
+                                <div class="d-flex justify-content-between align-items-center mb-3 pb-2 border-bottom">
+                                    <small class="text-muted">Makalelerim</small>
+                                    <strong class="text-primary fs-5">{% if stats is defined and stats.total %}{{ stats.total }}{% else %}0{% endif %}</strong>
+                                </div>
+                                <div class="d-flex justify-content-between align-items-center mb-3 pb-2 border-bottom">
+                                    <small class="text-muted">Değerlendirmede</small>
+                                    <strong class="text-warning fs-5">{% if stats is defined and stats.review %}{{ stats.review }}{% else %}0{% endif %}</strong>
+                                </div>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <small class="text-muted">Yayınlanan</small>
+                                    <strong class="text-success fs-5">{% if stats is defined and stats.accepted %}{{ stats.accepted }}{% else %}0{% endif %}</strong>
+                                </div>
+                            {% elif session.user_role == 'Hakem' %}
+                                <div class="d-flex justify-content-between align-items-center mb-3 pb-2 border-bottom">
+                                    <small class="text-muted">Atanan</small>
+                                    <strong class="text-primary fs-5">{% if stats is defined and stats.total %}{{ stats.total }}{% else %}0{% endif %}</strong>
+                                </div>
+                                <div class="d-flex justify-content-between align-items-center mb-3 pb-2 border-bottom">
+                                    <small class="text-muted">Değerlendirilen</small>
+                                    <strong class="text-success fs-5">{% if stats is defined and stats.review %}{{ stats.review }}{% else %}0{% endif %}</strong>
+                                </div>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <small class="text-muted">Bekleyen</small>
+                                    <strong class="text-warning fs-5">{% if stats is defined and stats.pending %}{{ stats.pending }}{% else %}0{% endif %}</strong>
+                                </div>
+                            {% elif session.user_role == 'Alan Editörü' %}
+                                <div class="d-flex justify-content-between align-items-center mb-3 pb-2 border-bottom">
+                                    <small class="text-muted">Atanan</small>
+                                    <strong class="text-primary fs-5">{% if stats is defined and stats.total %}{{ stats.total }}{% else %}0{% endif %}</strong>
+                                </div>
+                                <div class="d-flex justify-content-between align-items-center mb-3 pb-2 border-bottom">
+                                    <small class="text-muted">Hakemde</small>
+                                    <strong class="text-info fs-5">{% if stats is defined and stats.review %}{{ stats.review }}{% else %}0{% endif %}</strong>
+                                </div>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <small class="text-muted">Önerilen</small>
+                                    <strong class="text-success fs-5">{% if stats is defined and stats.accepted %}{{ stats.accepted }}{% else %}0{% endif %}</strong>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- Hızlı Erişim -->
+                    <div class="card mb-3 shadow-sm">
+                        <div class="card-header bg-success text-white">
+                            <h6 class="mb-0"><i class="bi bi-lightning-charge"></i> Hızlı Erişim</h6>
+                        </div>
+                        <div class="card-body p-2">
+                            {% if session.user_role == 'Yazar' %}
+                                <a href="{{ url_for('new_submission') }}" class="btn btn-sm btn-outline-primary w-100 mb-2">
+                                    <i class="bi bi-plus-circle"></i> Yeni Makale
+                                </a>
+                            {% endif %}
+                            {% if session.user_role == 'Editör' or session.user_role == 'Admin' %}
+                                <a href="{{ url_for('pending_articles') }}" class="btn btn-sm btn-outline-warning w-100 mb-2">
+                                    <i class="bi bi-clock-history"></i> Bekleyenler
+                                </a>
+                            {% endif %}
+                            {% if session.user_role == 'Hakem' %}
+                                <a href="{{ url_for('assigned_reviews') }}" class="btn btn-sm btn-outline-info w-100 mb-2">
+                                    <i class="bi bi-clipboard-check"></i> Atananlar
+                                </a>
+                            {% endif %}
+                            {% if session.user_role == 'Alan Editörü' %}
+                                <a href="{{ url_for('assigned_articles_fe') }}" class="btn btn-sm btn-outline-primary w-100 mb-2">
+                                    <i class="bi bi-file-earmark-text"></i> Atanan Makaleler
+                                </a>
+                            {% endif %}
+                            <a href="{{ url_for('messages') }}" class="btn btn-sm btn-outline-secondary w-100">
+                                <i class="bi bi-envelope"></i> Mesajlar
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Son Aktiviteler -->
+                    <div class="card mb-3 shadow-sm">
+                        <div class="card-header bg-info text-white">
+                            <h6 class="mb-0"><i class="bi bi-clock-history"></i> Son Aktiviteler</h6>
+                        </div>
+                        <div class="card-body p-0" style="max-height: 300px; overflow-y: auto;">
+                            {% if recent_articles is defined and recent_articles %}
+                            <div class="list-group list-group-flush">
+                                {% for article in recent_articles %}
+                                <a href="{{ url_for('article_detail', article_id=article.id) }}" class="list-group-item list-group-item-action border-0 px-3 py-2">
+                                    <div class="d-flex w-100 justify-content-between align-items-start">
+                                        <div class="flex-grow-1">
+                                            <small class="fw-bold d-block text-truncate" style="max-width: 150px;">{{ article.title[:30] }}{% if article.title|length > 30 %}...{% endif %}</small>
+                                            <small class="text-muted d-block">{{ article.id }}</small>
+                                        </div>
+                                        <span class="badge bg-{{ 'success' if article.status == 'Kabul Edildi' else 'warning' if article.status == 'Değerlendirmede' else 'info' }} ms-2">
+                                            {{ article.status[:10] }}
+                                        </span>
+                                    </div>
+                                    <small class="text-muted">{{ article.created_at[:10] if article.created_at else '' }}</small>
+                                </a>
+                                {% endfor %}
+                            </div>
+                            {% else %}
+                            <div class="list-group list-group-flush">
+                                <div class="list-group-item border-0 px-3 py-2">
+                                    <small class="text-muted">Son aktivite bulunmuyor</small>
+                                </div>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- Bildirimler -->
+                    <div class="card shadow-sm mb-3">
+                        <div class="card-header bg-warning text-dark d-flex justify-content-between align-items-center">
+                            <h6 class="mb-0"><i class="bi bi-bell"></i> Bildirimler</h6>
+                            {% if unread_messages is defined and unread_messages and unread_messages|length > 0 %}
+                            <span class="badge bg-danger">{{ unread_messages|length }}</span>
+                            {% endif %}
+                        </div>
+                        <div class="card-body p-0" style="max-height: 200px; overflow-y: auto;">
+                            {% if unread_messages is defined and unread_messages and unread_messages|length > 0 %}
+                            <div class="list-group list-group-flush">
+                                {% for msg in unread_messages[:3] %}
+                                <a href="{{ url_for('messages') }}" class="list-group-item list-group-item-action border-0 px-3 py-2">
+                                    <small class="fw-bold d-block text-truncate">{{ msg.subject[:25] }}{% if msg.subject|length > 25 %}...{% endif %}</small>
+                                    <small class="text-muted">{{ msg.from_user }}</small>
+                                </a>
+                                {% endfor %}
+                            </div>
+                            {% else %}
+                            <div class="list-group list-group-flush">
+                                <div class="list-group-item border-0 px-3 py-2">
+                                    <small class="text-muted">Yeni bildirim yok</small>
+                                </div>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    {% endblock %}
+                </div>
+            </aside>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Aktif menü öğesini vurgula
+        document.addEventListener('DOMContentLoaded', function() {
+            const currentPath = window.location.pathname;
+            const navLinks = document.querySelectorAll('.sidebar .nav-link');
+            
+            navLinks.forEach(link => {
+                const href = link.getAttribute('href');
+                if (href && (currentPath === href || currentPath.startsWith(href + '/'))) {
+                    link.classList.add('active');
+                }
+            });
+        });
+
+        // Mobile sidebar toggle
+        function toggleSidebar() {
+            const sidebar = document.getElementById('leftSidebar');
+            if (sidebar) {
+                sidebar.classList.toggle('show');
+            }
+        }
+
+        // Close sidebar when clicking outside on mobile
+        document.addEventListener('click', function(event) {
+            const sidebar = document.getElementById('leftSidebar');
+            const toggleBtn = event.target.closest('[onclick="toggleSidebar()"]');
+            
+            if (window.innerWidth < 992 && sidebar && sidebar.classList.contains('show')) {
+                if (!sidebar.contains(event.target) && !toggleBtn) {
+                    sidebar.classList.remove('show');
+                }
+            }
+        });
+    </script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

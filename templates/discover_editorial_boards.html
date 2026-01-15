@@ -1,0 +1,126 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row">
+        <div class="col-md-10 mx-auto">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h1 class="mb-0"><i class="bi bi-people"></i> Dergi Kurulları</h1>
+                </div>
+                <div class="card-body p-5">
+                    <div class="mb-4">
+                        <h3 class="text-primary mb-3">Editör Kurulu</h3>
+                        <div class="card mb-3">
+                            <div class="card-body">
+                                <h5 class="text-primary">Baş Editör:</h5>
+                                <p class="mb-0">
+                                    <strong>Prof. Dr. Ahmet Yılmaz</strong><br>
+                                    İskenderun Teknik Üniversitesi, Mühendislik Fakültesi
+                                </p>
+                            </div>
+                        </div>
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="text-primary">Yardımcı Editörler:</h5>
+                                <ul class="list-unstyled mb-0">
+                                    <li>• <strong>Prof. Dr. Mehmet Demir</strong> - Bilgisayar Mühendisliği Bölümü</li>
+                                    <li>• <strong>Prof. Dr. Ayşe Kaya</strong> - Elektrik-Elektronik Mühendisliği Bölümü</li>
+                                    <li>• <strong>Prof. Dr. Mustafa Özkan</strong> - Makine Mühendisliği Bölümü</li>
+                                    <li>• <strong>Prof. Dr. Zeynep Şahin</strong> - Endüstri Mühendisliği Bölümü</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <h3 class="text-primary mb-3">Alan Editörleri</h3>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <div class="card h-100">
+                                    <div class="card-header bg-light">
+                                        <strong>Bilgisayar Mühendisliği</strong>
+                                    </div>
+                                    <div class="card-body">
+                                        <ul class="list-unstyled mb-0">
+                                            <li>• <strong>Doç. Dr. Can Arslan</strong> - Yazılım Mühendisliği</li>
+                                            <li>• <strong>Doç. Dr. Elif Yıldız</strong> - Yapay Zeka ve Makine Öğrenmesi</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <div class="card h-100">
+                                    <div class="card-header bg-light">
+                                        <strong>Elektrik-Elektronik Mühendisliği</strong>
+                                    </div>
+                                    <div class="card-body">
+                                        <ul class="list-unstyled mb-0">
+                                            <li>• <strong>Doç. Dr. Burak Çelik</strong> - Kontrol Sistemleri ve Otomasyon</li>
+                                            <li>• <strong>Doç. Dr. Deniz Aydın</strong> - Güç Elektroniği ve Enerji Sistemleri</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <div class="card h-100">
+                                    <div class="card-header bg-light">
+                                        <strong>Makine Mühendisliği</strong>
+                                    </div>
+                                    <div class="card-body">
+                                        <ul class="list-unstyled mb-0">
+                                            <li>• <strong>Doç. Dr. Emre Koç</strong> - Termodinamik ve Enerji</li>
+                                            <li>• <strong>Doç. Dr. Fatma Yılmaz</strong> - Malzeme Bilimi ve Mühendisliği</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <div class="card h-100">
+                                    <div class="card-header bg-light">
+                                        <strong>Endüstri Mühendisliği</strong>
+                                    </div>
+                                    <div class="card-body">
+                                        <ul class="list-unstyled mb-0">
+                                            <li>• <strong>Doç. Dr. Gökhan Özdemir</strong> - Üretim Sistemleri</li>
+                                            <li>• <strong>Doç. Dr. Hülya Kılıç</strong> - Optimizasyon ve Yöneylem Araştırması</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <h3 class="text-primary mb-3">Hakem Kurulu</h3>
+                        <div class="alert alert-info">
+                            <p class="mb-0">
+                                Dergimiz, ulusal ve uluslararası alanında uzman akademisyenlerden oluşan
+                                geniş bir hakem kuruluna sahiptir. Hakemler, makaleleri objektif ve
+                                bilimsel kriterlere göre değerlendirmektedir.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <h3 class="text-primary mb-3">Yayın Kurulu</h3>
+                        <div class="alert alert-info">
+                            <p class="mb-0">
+                                Yayın kurulu, derginin yayın politikalarını belirler ve stratejik kararlar
+                                alır. Kurul, derginin bilimsel kalitesini ve etik standartlarını korumakla
+                                yükümlüdür.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="mt-4">
+                        <a href="{{ url_for('home') }}" class="btn btn-primary">
+                            <i class="bi bi-arrow-left"></i> Ana Sayfaya Dön
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

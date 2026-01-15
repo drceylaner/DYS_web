@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="mb-4">
+        <h1>Cilt {{ volume }}, Sayı {{ issue }} ({{ year }})</h1>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{{ url_for('home') }}">Ana Sayfa</a></li>
+                <li class="breadcrumb-item"><a href="{{ url_for('archive') }}">Arşiv</a></li>
+                <li class="breadcrumb-item active">Sayı Detayı</li>
+            </ol>
+        </nav>
+    </div>
+    
+    {% if articles %}
+    <div class="card">
+        <div class="card-header">
+            <h5 class="mb-0">Makaleler</h5>
+        </div>
+        <div class="card-body">
+            <div class="list-group">
+                {% for article in articles %}
+                <div class="list-group-item">
+                    <h5 class="mb-1">{{ article.title }}</h5>
+                    <p class="mb-1">
+                        <strong>Yazar:</strong> {{ article.authors or article.author }}
+                    </p>
+                    {% if article.pages %}
+                    <small class="text-muted">Sayfa: {{ article.pages }}</small>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <div class="alert alert-info">
+        <i class="bi bi-info-circle"></i> Bu sayıda henüz makale bulunmamaktadır.
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

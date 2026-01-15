@@ -1,0 +1,104 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row">
+        <div class="col-md-10 mx-auto">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h1 class="mb-0"><i class="bi bi-info-circle"></i> Amaç ve Kapsam</h1>
+                </div>
+                <div class="card-body p-5">
+                    <div class="mb-4">
+                        <h3 class="text-primary mb-3">Amaç</h3>
+                        <p class="lead">
+                            İSTE Mühendislik Dergisi, mühendislik bilimlerinin tüm alanlarında yapılan özgün
+                            araştırmaları yayınlayarak bilimsel bilgi birikimine katkıda bulunmayı amaçlamaktadır.
+                            Dergimiz, akademisyenler, araştırmacılar ve uygulayıcılar arasında bilgi paylaşımını
+                            teşvik eder ve mühendislik alanındaki güncel gelişmeleri takip eder.
+                        </p>
+                    </div>
+
+                    <div class="mb-4">
+                        <h3 class="text-primary mb-3">Kapsam</h3>
+                        <p class="mb-3">Dergimiz aşağıdaki mühendislik alanlarında makaleler kabul etmektedir:</p>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <h5><i class="bi bi-laptop"></i> Bilgisayar Mühendisliği</h5>
+                                <p class="text-muted">
+                                    Yazılım mühendisliği, yapay zeka, veri bilimi, siber güvenlik,
+                                    bilgisayar ağları, algoritmalar ve veri yapıları
+                                </p>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <h5><i class="bi bi-lightning-charge"></i> Elektrik-Elektronik Mühendisliği</h5>
+                                <p class="text-muted">
+                                    Elektrik sistemleri, elektronik devreler, kontrol sistemleri, sinyal işleme,
+                                    güç elektroniği, telekomünikasyon
+                                </p>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <h5><i class="bi bi-gear"></i> Makine Mühendisliği</h5>
+                                <p class="text-muted">
+                                    Termodinamik, akışkanlar mekaniği, malzeme bilimi, üretim teknolojileri,
+                                    robotik, otomasyon
+                                </p>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <h5><i class="bi bi-diagram-3"></i> Endüstri Mühendisliği</h5>
+                                <p class="text-muted">
+                                    Üretim planlama, optimizasyon, yöneylem araştırması, kalite yönetimi,
+                                    tedarik zinciri yönetimi
+                                </p>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <h5><i class="bi bi-building"></i> İnşaat Mühendisliği</h5>
+                                <p class="text-muted">
+                                    Yapı mühendisliği, geoteknik, ulaştırma, su kaynakları, yapı malzemeleri
+                                </p>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <h5><i class="bi bi-flask"></i> Kimya Mühendisliği</h5>
+                                <p class="text-muted">
+                                    Proses tasarımı, reaksiyon mühendisliği, ayırma işlemleri, malzeme mühendisliği
+                                </p>
+                            </div>
+                        </div>
+                        
+                        <div class="alert alert-info mt-3">
+                            <strong>Diğer Mühendislik Disiplinleri:</strong> Çevre mühendisliği, biyomedikal mühendislik,
+                            mekatronik ve ilgili disiplinlerarası çalışmalar
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <h3 class="text-primary mb-3">Makale Türleri</h3>
+                        <p class="mb-3">Dergimiz aşağıdaki türde makaleler kabul etmektedir:</p>
+                        <ul class="list-group">
+                            <li class="list-group-item">
+                                <strong>Araştırma Makaleleri:</strong> Özgün araştırma sonuçlarını içeren makaleler
+                            </li>
+                            <li class="list-group-item">
+                                <strong>Derleme Makaleleri:</strong> Belirli bir konuda mevcut literatürün kapsamlı incelemesi
+                            </li>
+                            <li class="list-group-item">
+                                <strong>Kısa İleti:</strong> Kısa araştırma sonuçları veya teknik notlar
+                            </li>
+                            <li class="list-group-item">
+                                <strong>Vaka Çalışmaları:</strong> Gerçek uygulamalardan örnekler
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="mt-4">
+                        <a href="{{ url_for('home') }}" class="btn btn-primary">
+                            <i class="bi bi-arrow-left"></i> Ana Sayfaya Dön
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

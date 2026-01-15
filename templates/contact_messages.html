@@ -1,0 +1,51 @@
+{% extends "dashboard_base.html" %}
+
+{% block content %}
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2"><i class="bi bi-chat-dots"></i> İletişim Mesajları</h1>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        {% if messages %}
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Ad Soyad</th>
+                        <th>E-posta</th>
+                        <th>Konu</th>
+                        <th>Mesaj</th>
+                        <th>Tarih</th>
+                        <th>Durum</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for message in messages %}
+                    <tr class="{% if not message.is_read %}table-warning{% endif %}">
+                        <td>{{ message.name }}</td>
+                        <td>{{ message.email }}</td>
+                        <td>{{ message.subject }}</td>
+                        <td>{{ message.message[:50] }}{% if message.message|length > 50 %}...{% endif %}</td>
+                        <td>{{ message.created_at[:16] if message.created_at else '' }}</td>
+                        <td>
+                            {% if message.is_read %}
+                            <span class="badge bg-success">Okundu</span>
+                            {% else %}
+                            <span class="badge bg-warning">Okunmadı</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="text-center py-5">
+            <i class="bi bi-chat-dots fs-1 text-muted"></i>
+            <p class="text-muted mt-3">İletişim mesajı bulunmamaktadır.</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
